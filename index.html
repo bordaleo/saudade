@@ -117,17 +117,19 @@
     const sender = 'OTARIA';
     document.getElementById('senderName').textContent = sender;
 
-    // criar corações flutuantes
+    // criar corações flutuantes + abrir WhatsApp
     const floatLayer = document.getElementById('floatLayer');
     document.getElementById('sendHeart').addEventListener('click', () => {
       for(let i=0;i<10;i++) createHeart();
+
+      // abrir grupo do WhatsApp
+      window.open("https://chat.whatsapp.com/CebMHyLO0IwL9uw3ptuZYC", "_blank");
     });
 
     function createHeart(){
       const el = document.createElement('div');
       el.className='heart-anim';
       el.textContent = '💜';
-      const x = Math.random()*60 + 20; // horizontal offset
       el.style.left = (window.innerWidth/2 - 30 + (Math.random()*120-60)) + 'px';
       el.style.top = (window.innerHeight - 120 + Math.random()*20) + 'px';
       el.style.fontSize = (14 + Math.random()*18) + 'px';
@@ -135,34 +137,6 @@
       floatLayer.appendChild(el);
       setTimeout(()=> el.remove(), 3000);
     }
-
-    // editar mensagem inline
-    const editBtn = document.getElementById('editBtn');
-    const mainMsg = document.getElementById('mainMsg');
-    let editing = false;
-    editBtn.addEventListener('click', ()=>{
-      if(!editing){
-        const ta = document.createElement('textarea');
-        ta.value = mainMsg.textContent.trim();
-        ta.style.width='100%';
-        ta.style.minHeight='90px';
-        ta.style.fontSize='15px';
-        ta.style.borderRadius='10px';
-        ta.style.padding='10px';
-        mainMsg.replaceWith(ta);
-        editBtn.textContent='Salvar';
-        editing = true;
-      } else {
-        const ta = document.querySelector('textarea');
-        const div = document.createElement('div');
-        div.id='mainMsg';
-        div.className='msg';
-        div.textContent = ta.value || '...';
-        ta.replaceWith(div);
-        editBtn.textContent='Editar mensagem';
-        editing = false;
-      }
-    });
 
     // permitir tocar no texto para copiar
     document.addEventListener('click', (e)=>{

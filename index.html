@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SGabriella Palaria2</title>
+  <style>
+    :root{
+      --bg1:#FFF5F9;
+      --bg2:#FFF0F6;
+      --accent:#d63384;
+      --accent-2:#ff80b3;
+      --card:#ffffff;
+      --glass: rgba(255,255,255,0.6);
+      --radius:18px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      padding:24px 16px;
+      background: radial-gradient(1200px 600px at 10% 10%, var(--bg2), var(--bg1));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#222;
+    }
+    .card{
+      width:100%;
+      max-width:420px;
+      background: linear-gradient(180deg, var(--glass), rgba(255,255,255,0.9));
+      border-radius:var(--radius);
+      padding:20px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.08);
+      backdrop-filter: blur(6px);
+      text-align:center;
+    }
+    .title{
+      font-size:20px;
+      font-weight:700;
+      letter-spacing:0.2px;
+      color:var(--accent);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+    }
+    .heart{
+      font-size:28px;
+      transform-origin:center;
+      animation:pulse 1s infinite alternate;
+    }
+    @keyframes pulse{to{transform:scale(1.12); opacity:0.95}}
+    .big{
+      margin-top:14px;
+      font-size:28px;
+      font-weight:800;
+    }
+    .msg{
+      margin-top:12px;
+      font-size:16px;
+      line-height:1.45;
+      color:#333;
+      padding:12px 10px;
+    }
+    .from{
+      margin-top:16px;
+      font-weight:700;
+      color:#555;
+      font-size:14px;
+    }
+    .btns{display:flex;gap:10px;justify-content:center;margin-top:18px}
+    button{
+      border:0;
+      padding:10px 14px;
+      border-radius:12px;
+      font-weight:700;
+      cursor:pointer;
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      color:white;
+      box-shadow:0 6px 18px rgba(214,51,132,0.18);
+    }
+    .btn-ghost{background:transparent;color:var(--accent);border:2px solid rgba(214,51,132,0.12);}
+    .small{font-size:13px;padding:8px 10px}
+    /* floating hearts */
+    .floating{position:fixed;left:0;top:0;pointer-events:none;overflow:visible}
+    .heart-anim{position:absolute;font-size:18px;opacity:0.9;animation:rise 2800ms linear forwards}
+    @keyframes rise{
+      0%{transform:translateY(0) scale(0.8);opacity:1}
+      100%{transform:translateY(-420px) translateX(40px) scale(1.3);opacity:0}
+    }
+    /* responsive text */
+    @media (min-width:420px){body{padding:40px}}
+  </style>
+</head>
+<body>
+  <div class="card" role="main">
+    <div class="title">✨ <span style="color:#333">MUITA SAUDADE</span> DE <span style="color:var(--accent);">VOCÊ</span> ✨</div>
+    <div class="big">Tô com muita saudade 💜</div>
+
+    <div class="msg" id="mainMsg">TO COM SAUDADE DEMAISSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS</div>
+
+    <div class="from">TE AMO MUITO, <span id="senderName">OTARIA</span></div>
+
+    <div class="btns">
+      <button id="sendHeart" class="small">Enviar coraçõezinhos</button>
+      <button id="editBtn" class="small btn-ghost"></button>
+    </div>
+
+    <div style="margin-top:12px;font-size:12px;color:#777"></div>
+  </div>
+
+  <div class="floating" id="floatLayer"></div>
+
+  <script>
+    // Personalize: quem está enviando (mude se quiser)
+    const sender = 'Leonardo';
+    document.getElementById('senderName').textContent = sender;
+
+    // criar corações flutuantes
+    const floatLayer = document.getElementById('floatLayer');
+    document.getElementById('sendHeart').addEventListener('click', () => {
+      for(let i=0;i<10;i++) createHeart();
+    });
+
+    function createHeart(){
+      const el = document.createElement('div');
+      el.className='heart-anim';
+      el.textContent = '💜';
+      const x = Math.random()*60 + 20; // horizontal offset
+      el.style.left = (window.innerWidth/2 - 30 + (Math.random()*120-60)) + 'px';
+      el.style.top = (window.innerHeight - 120 + Math.random()*20) + 'px';
+      el.style.fontSize = (14 + Math.random()*18) + 'px';
+      el.style.opacity = 0.95;
+      floatLayer.appendChild(el);
+      setTimeout(()=> el.remove(), 3000);
+    }
+
+    // editar mensagem inline
+    const editBtn = document.getElementById('editBtn');
+    const mainMsg = document.getElementById('mainMsg');
+    let editing = false;
+    editBtn.addEventListener('click', ()=>{
+      if(!editing){
+        const ta = document.createElement('textarea');
+        ta.value = mainMsg.textContent.trim();
+        ta.style.width='100%';
+        ta.style.minHeight='90px';
+        ta.style.fontSize='15px';
+        ta.style.borderRadius='10px';
+        ta.style.padding='10px';
+        mainMsg.replaceWith(ta);
+        editBtn.textContent='Salvar';
+        editing = true;
+      } else {
+        const ta = document.querySelector('textarea');
+        const div = document.createElement('div');
+        div.id='mainMsg';
+        div.className='msg';
+        div.textContent = ta.value || '...';
+        ta.replaceWith(div);
+        editBtn.textContent='Editar mensagem';
+        editing = false;
+      }
+    });
+
+    // permitir tocar no texto para copiar
+    document.addEventListener('click', (e)=>{
+      if(e.target && e.target.id==='mainMsg'){
+        const txt = e.target.textContent;
+        navigator.clipboard && navigator.clipboard.writeText(txt).then(()=>{
+          alert('Mensagem copiada! Agora é só colar pra ela 😊');
+        }).catch(()=>{});
+      }
+    });
+  </script>
+</body>
+</html>
